@@ -1,0 +1,29 @@
+{
+    "menu_main": [
+        {
+            "id": 1,
+            "title": "ภาพรวม",
+            "to": "dashboard"
+        },
+        {
+            "id": 2,
+            "title": "ผลิตภัณฑ์",
+            "to": "products"
+        },
+        {
+            "id": 3,
+            "title": "แบรนด์",
+            "to": "brands"
+        },
+        {
+            "id": 4,
+            "title": "ประเภทของผลิตภัณฑ์",
+            "to": "product-categories"
+        },
+        {
+            "id": 5,
+            "title": "ชนิดของผลิตภัณฑ์",
+            "to": "product-type"
+        }
+    ]
+}

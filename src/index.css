@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap');
+
+@import "tailwindcss";
+
+
+@theme {
+    --color-primary: #FFFBEF;
+    --color-yellow: #F2CA50;
+    --color-orange: #F5743B;
+
+    --font-anuphan: "Anuphan", sans-serif;
+}
+
+body {
+    font-family: "Anuphan", sans-serif;
+}

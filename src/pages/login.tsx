@@ -33,7 +33,7 @@ const LoginPage = () => {
               username: authRes.data.username,
             })
           );
-          navigate("/dashboard");
+          navigate("/");
         } else {
           dispatch(logout());
         }
@@ -53,7 +53,7 @@ const LoginPage = () => {
   };  
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/" />;
   }
 
   return (

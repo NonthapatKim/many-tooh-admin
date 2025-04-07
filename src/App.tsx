@@ -73,7 +73,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-          <Route path="/dashboard" element={<DashboardPage urlParth={urlparth} />} />
+          <Route path="/" element={<DashboardPage urlParth={urlparth} />} />
           <Route path="/products" element={<ProductsPage urlParth={urlparth} />} />
           <Route path="/brands" element={<BrandsPage urlParth={urlparth} />} />
           <Route path="/product-categories" element={<ProductCategoriesPage urlParth={urlparth} />} />

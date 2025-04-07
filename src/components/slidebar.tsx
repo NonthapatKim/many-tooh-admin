@@ -1,7 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/authSlice';
+
+// API
 import apiClient from '../api/apiClient';
+
+// Icon
+import { TbLogout2 } from "react-icons/tb";
 
 import Menu from "../json/menu.json"
 
@@ -52,8 +57,9 @@ const SlideBar = ({ urlParth }: SildebarProps) => {
                     <li className="mt-10 flex flex-col rounded-md p-3 hover:bg-white/50 hover:text-black text-black gap-x-4">
                         <button 
                             onClick={handleLogout}
-                            className="font-bold text-base origin-left duration-200 text-left cursor-pointer"
+                            className="flex items-center gap-x-2 font-bold text-base origin-left duration-200 text-left cursor-pointer"
                         >
+                            <TbLogout2 className="text-xl" />
                             ออกจากระบบ
                         </button>
                     </li>

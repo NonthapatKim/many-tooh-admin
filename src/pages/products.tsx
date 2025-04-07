@@ -17,6 +17,7 @@ import NoImage from "../assets/no-image.png";
 import apiClient from "../api/apiClient";
 
 // Component
+import AddProductModal from "../components/add-product";
 import DebouncedInput from "../components/debouncedinput";
 import SlideBar from "../components/slidebar";
 
@@ -39,7 +40,7 @@ import {
     ProductTypeData,
     ProductEditDataType
 } from "../types/product";
-import AddProductModal from "../components/add-product";
+
 
 // Zod
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -128,7 +129,7 @@ const ProductsPage = ({ urlParth }: PageProps) => {
 
     const fetchProductCategoriesData = useCallback(async () => {
         try {
-            const response = await apiClient.get(`/products/categories`);
+            const response = await apiClient.get(`/categories`);
             setProductCategoriesData(response.data)
         } catch (err) {
             console.error(err);
@@ -137,7 +138,7 @@ const ProductsPage = ({ urlParth }: PageProps) => {
 
     const fetchProductTypeData = useCallback(async () => {
         try {
-            const response = await apiClient.get(`/products/type`);
+            const response = await apiClient.get(`/types`);
             setProductTypeData(response.data)
         } catch (err) {
             console.error(err);
@@ -146,7 +147,7 @@ const ProductsPage = ({ urlParth }: PageProps) => {
 
     const fetchProductData = useCallback(async () => {
         try {
-            const response = await apiClient.get(`/products/`);
+            const response = await apiClient.get(`/products`);
 
             if (response?.data && Array.isArray(response.data)) {
                 setProductData(response.data);
@@ -388,7 +389,7 @@ const ProductsPage = ({ urlParth }: PageProps) => {
                     <div className="flex justify-between items-center p-5">
                         <h1 className="text-3xl font-semibold">ผลิตภัณฑ์</h1>
                         <button
-                            className="bg-orange font-semibold text-white py-2 px-3 flex items-center gap-1 rounded-md"
+                            className="bg-orange font-semibold text-white py-2 px-3 flex items-center gap-1 rounded-md cursor-pointer"
                             onClick={() => setAddModal(true)}
                         >
                             <IoIosAdd />

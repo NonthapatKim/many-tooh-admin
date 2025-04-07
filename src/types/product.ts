@@ -25,8 +25,16 @@ export interface ProductCategoriesDataType {
     product_category_name: string;
 }
 
+export interface ProductCategoriesAddDataType {
+    product_category_name: string;
+}
+
 export interface ProductTypeData {
     product_type_id: string;
+    product_type_name: string;
+}
+
+export interface ProductTypeAddData {
     product_type_name: string;
 }
 

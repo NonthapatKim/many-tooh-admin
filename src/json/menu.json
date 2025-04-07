@@ -7,23 +7,23 @@
         },
         {
             "id": 2,
-            "title": "ผลิตภัณฑ์",
-            "to": "products"
-        },
-        {
-            "id": 3,
             "title": "แบรนด์",
             "to": "brands"
         },
         {
-            "id": 4,
+            "id": 3,
             "title": "ประเภทของผลิตภัณฑ์",
             "to": "product-categories"
         },
         {
-            "id": 5,
+            "id": 4,
             "title": "ชนิดของผลิตภัณฑ์",
             "to": "product-type"
+        },
+        {
+            "id": 5,
+            "title": "ผลิตภัณฑ์",
+            "to": "products"
         }
     ]
 }

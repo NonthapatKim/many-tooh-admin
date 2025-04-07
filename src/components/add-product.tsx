@@ -13,6 +13,7 @@ import { toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Type
+import { AddModalProps } from "../types/props";
 import { BrandDataType } from "../types/brand";
 import {
     ProductCategoriesDataType,
@@ -55,12 +56,7 @@ const addProductSchema = z.object({
     }, { message: "ขนาดไฟล์ต้องไม่เกิน 5MB" }),
 })
 
-interface AddProductModalProps {
-    setAddModal: React.Dispatch<React.SetStateAction<boolean>>;
-    refreshData: () => void;
-}
-
-const AddProductModal = ({ setAddModal, refreshData }: AddProductModalProps) => {
+const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
 
     const [brandData, setBrandData] = useState<BrandDataType[]>([])
     const [productCategoriesData, setProductCategoriesData] = useState<ProductCategoriesDataType[]>([])
@@ -110,7 +106,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddProductModalProps) => 
 
     const fetchProductCategoriesData = useCallback(async () => {
         try {
-            const response = await apiClient.get(`/products/categories`);
+            const response = await apiClient.get(`/categories`);
             setProductCategoriesData(response.data)
         } catch (err) {
             console.error(err);
@@ -119,7 +115,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddProductModalProps) => 
 
     const fetchProductTypeData = useCallback(async () => {
         try {
-            const response = await apiClient.get(`/products/type`);
+            const response = await apiClient.get(`/types`);
             setProductTypeData(response.data)
         } catch (err) {
             console.error(err);

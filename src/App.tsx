@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './privateroute';
 import LoginPage from './pages/login';
 import DashboardPage from './pages/dashboard';
@@ -66,7 +66,7 @@ function App() {
   }
 
   return (
-    <Router basename="/">
+    <>
       <ToastContainer />
       
       <Routes>
@@ -80,7 +80,7 @@ function App() {
           <Route path="/product-type" element={<ProductTypePage urlParth={urlparth} />} />
         </Route>
       </Routes>
-    </Router>
+    </>
   )
 }
 

@@ -1,7 +1,7 @@
 import axios from 'axios'; 
 
 const apiClient = axios.create({
-  baseURL: "https://many-tooh-backend-api-359586997523.asia-southeast1.run.app/api/v1",
+  baseURL: import.meta.env.VITE_BASE_API,
   withCredentials: true,
 });
 

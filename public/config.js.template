@@ -1,3 +1,0 @@
-window.__APP_CONFIG__ = {
-  BASE_API: "${VITE_BASE_API}"
-};

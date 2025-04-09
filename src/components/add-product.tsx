@@ -58,7 +58,7 @@ const addProductSchema = z.object({
 
 const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
 
-    const dangerousWords = ["SLS", "Sodium lauryl sulphate", "Paraben", "Propyl paraben", "Sodium Benzoate", "Ethyl paraben", "Methyl paraben"];
+    const dangerousWords = ["SLS", "Sodium lauryl sulphate", "Sodium Lauryl Sulfate", "Paraben", "Propyl paraben", "Sodium Benzoate", "Ethyl paraben", "Methyl paraben"];
 
     const [brandData, setBrandData] = useState<BrandDataType[]>([])
     const [productCategoriesData, setProductCategoriesData] = useState<ProductCategoriesDataType[]>([])
@@ -474,17 +474,22 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
                                             value={field.value || ""}
                                             onChange={(e) => {
                                                 const input = e.target.value;
-                                                const ingredients = input.split(",").map((i) => i.trim());
+
+                                                // แปลงข้อความให้ clean ก่อน (รองรับ comma, newline)
+                                                const rawItems = input
+                                                    .split(/,|\n/)
+                                                    .map((i) => i.trim())
+                                                    .filter(Boolean); // ตัด empty string ออก
 
                                                 const currentDanger = getValues("dangerous_ingredient") || "";
                                                 const currentDangerList = currentDanger
-                                                    .split(",")
+                                                    .split(/,|\n/)
                                                     .map((i) => i.trim())
                                                     .filter(Boolean);
 
                                                 const newDanger: string[] = [];
 
-                                                ingredients.forEach((inputItem) => {
+                                                rawItems.forEach((inputItem) => {
                                                     const match = dangerousWords.find((word) =>
                                                         inputItem.toLowerCase().includes(word.toLowerCase())
                                                     );
@@ -493,8 +498,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
                                                     }
                                                 });
 
-                                                // ลบของที่แมตช์แล้วออกจาก active
-                                                const safe = ingredients.filter((item) => {
+                                                const safe = rawItems.filter((item) => {
                                                     return !dangerousWords.some((word) =>
                                                         item.toLowerCase().includes(word.toLowerCase())
                                                     );

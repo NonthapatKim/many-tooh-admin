@@ -32,7 +32,7 @@ const addProductSchema = z.object({
     product_category_id: z
         .string()
         .min(1, { message: "กรุณาเลือกหมวดหมู่ของผลิตภัณฑ์" }),
-    product_type_id:  z
+    product_type_id: z
         .string()
         .min(1, { message: "กรุณาเลือกประเภทของหมวดหมู่ผลิตภัณฑ์" }),
     product_name: z
@@ -51,12 +51,14 @@ const addProductSchema = z.object({
         .string()
         .min(1, { message: "กรุณาเลือก" }),
     product_image: z.instanceof(File).nullable().refine((file) => {
-        if (!file) return true; 
+        if (!file) return true;
         return file.size <= 10 * 1024 * 1024;
     }, { message: "ขนาดไฟล์ต้องไม่เกิน 10MB" }),
 })
 
 const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
+
+    const dangerousWords = ["SLS", "Sodium lauryl sulphate", "Paraben", "Propyl paraben", "Sodium Benzoate", "Ethyl paraben", "Methyl paraben"];
 
     const [brandData, setBrandData] = useState<BrandDataType[]>([])
     const [productCategoriesData, setProductCategoriesData] = useState<ProductCategoriesDataType[]>([])
@@ -65,7 +67,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const { getRootProps, getInputProps } = useDropzone({
         accept: {
-            "image/*": [".png", ".jpg", ".jpeg", ".webp"], 
+            "image/*": [".png", ".jpg", ".jpeg", ".webp"],
         },
         onDrop: (acceptedFiles) => {
             if (acceptedFiles.length > 0) {
@@ -90,7 +92,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
         product_image: null,
     })
 
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const { control, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
         defaultValues: addProductData,
         resolver: zodResolver(addProductSchema),
     });
@@ -146,32 +148,32 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
 
             if (response.status === 200) {
                 toast.success('เพิ่มข้อมูลสำเร็จ !', {
-                  position: "top-center",
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  transition: Bounce,
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
                 });
-        
+
                 setAddModal(false)
                 refreshData()
             }
-        } catch(error) {
+        } catch (error) {
             console.error("Error status:", error);
             toast.error('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', {
-              position: "top-center",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
             });
         }
     })
@@ -317,23 +319,23 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
                                     name="product_image"
                                     control={control}
                                     render={({ field }) => (
-                                        <div 
-                                            {...getRootProps()} 
+                                        <div
+                                            {...getRootProps()}
                                             className="border-2 border-dashed border-gray-400 p-6 flex flex-col items-center justify-center cursor-pointer rounded-md hover:border-blue-500 transition"
                                         >
-                                            <input 
-                                                {...getInputProps()} 
+                                            <input
+                                                {...getInputProps()}
                                                 onChange={(e) => {
                                                     const file = e.target.files?.[0];
                                                     setSelectedImage(file || null);
                                                     field.onChange(file);
-                                                }} 
+                                                }}
                                             />
-                                            
+
                                             {selectedImage ? (
-                                                <img 
-                                                    src={URL.createObjectURL(selectedImage)} 
-                                                    alt="Preview" 
+                                                <img
+                                                    src={URL.createObjectURL(selectedImage)}
+                                                    alt="Preview"
                                                     className="w-32 h-32 object-cover mt-3 rounded-md"
                                                 />
                                             ) : (
@@ -471,7 +473,38 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
                                             rows={4}
                                             value={field.value || ""}
                                             onChange={(e) => {
-                                                field.onChange(e);
+                                                const input = e.target.value;
+                                                const ingredients = input.split(",").map((i) => i.trim());
+
+                                                const currentDanger = getValues("dangerous_ingredient") || "";
+                                                const currentDangerList = currentDanger
+                                                    .split(",")
+                                                    .map((i) => i.trim())
+                                                    .filter(Boolean);
+
+                                                const newDanger: string[] = [];
+
+                                                ingredients.forEach((inputItem) => {
+                                                    const match = dangerousWords.find((word) =>
+                                                        inputItem.toLowerCase().includes(word.toLowerCase())
+                                                    );
+                                                    if (match && !currentDangerList.includes(match)) {
+                                                        newDanger.push(match);
+                                                    }
+                                                });
+
+                                                // ลบของที่แมตช์แล้วออกจาก active
+                                                const safe = ingredients.filter((item) => {
+                                                    return !dangerousWords.some((word) =>
+                                                        item.toLowerCase().includes(word.toLowerCase())
+                                                    );
+                                                });
+
+                                                setValue("active_ingredient", safe.join(", "));
+                                                setValue(
+                                                    "dangerous_ingredient",
+                                                    [...currentDangerList, ...newDanger].join(", ")
+                                                );
                                             }}
                                         />
                                     )}
@@ -483,7 +516,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
                                     ส่วนประกอบ <span className="text-red-700 font-bold">ที่เป็นอันตราย</span>
                                 </label>
                                 <Controller
-                                    name="active_ingredient"
+                                    name="dangerous_ingredient"
                                     control={control}
                                     render={({ field }) => (
                                         <textarea

@@ -73,8 +73,8 @@ const updateProductSchema = z.object({
         .min(1, { message: "กรุณาเลือก" }),
     product_image: z.instanceof(File).nullable().refine((file) => {
         if (!file) return true;
-        return file.size <= 5 * 1024 * 1024;
-    }, { message: "ขนาดไฟล์ต้องไม่เกิน 5MB" }),
+        return file.size <= 10 * 1024 * 1024;
+    }, { message: "ขนาดไฟล์ต้องไม่เกิน 10MB" }),
 })
 type ProductEditFormDataType = z.infer<typeof updateProductSchema>;
 

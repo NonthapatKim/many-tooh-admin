@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, logout } from "../redux/authSlice"; 
-import Logo from "../assets/many-tooh-logo.png";
+import Logo from "/many-tooh-logo.png";
 import { RootState } from "../redux/store"; 
 
 import apiClient from "../api/apiClient";

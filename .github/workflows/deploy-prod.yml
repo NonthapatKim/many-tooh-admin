@@ -24,7 +24,7 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+          VITE_BASE_API: ${{ secrets.VITE_BASE_API }}
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0

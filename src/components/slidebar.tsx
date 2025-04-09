@@ -34,7 +34,7 @@ const SlideBar = ({ urlParth }: SildebarProps) => {
             <div>
                 <div className="flex gap-x-4 items-center ps-5">
                     <img
-                        src="./src/assets/many-tooh-logo.png"
+                        src="/many-tooh-logo.png"
                         className="w-10"
                     />
                     <h1 className="text-black origin-left font-medium text-xl duration-200">Many Tooh Admin</h1>

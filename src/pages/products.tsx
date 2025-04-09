@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-table";
 import { PageProps } from "../types/props";
 
-import NoImage from "../assets/no-image.png";
+const NoImage = "/no-image.png";
 
 // API
 import apiClient from "../api/apiClient";

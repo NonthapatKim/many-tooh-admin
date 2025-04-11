@@ -16,6 +16,9 @@ const NoImage = "/no-image.png";
 // API
 import apiClient from "../api/apiClient";
 
+// Constant
+import { dangerousWords } from "../constants/dangerousList";
+
 // Component
 import AddProductModal from "../components/add-product";
 import DebouncedInput from "../components/debouncedinput";
@@ -223,7 +226,7 @@ const ProductsPage = ({ urlParth }: PageProps) => {
 
     const [editingValues, setEditingValues] = useState<ProductEditDataType>(defaultEditingValues)
 
-    const { control, handleSubmit, reset, formState: { errors } } = useForm({
+    const { control, handleSubmit, reset, setValue, getValues, formState: { errors } } = useForm({
         defaultValues: editingValues,
         resolver: zodResolver(updateProductSchema),
     });
@@ -801,10 +804,46 @@ const ProductsPage = ({ urlParth }: PageProps) => {
                                                             {...field}
                                                             className="border border-slate-400 p-2 w-full rounded-md"
                                                             placeholder="ส่วนประกอบที่ไม่เป็นอันตราย"
-                                                            rows={4}
+                                                            rows={6}
                                                             value={field.value || ""}
                                                             onChange={(e) => {
-                                                                field.onChange(e);
+                                                                const input = e.target.value;
+
+                                                                // ดึง dangerous เดิมมาก่อน
+                                                                const currentDanger = getValues("dangerous_ingredient") || "";
+                                                                const currentDangerList = currentDanger
+                                                                    .split(/,|\n/)
+                                                                    .map((i) => i.trim())
+                                                                    .filter(Boolean);
+
+                                                                // แยกข้อความที่ user พิมพ์หรือวางเข้ามา
+                                                                const rawItems = input
+                                                                    .split(/,|\n/)
+                                                                    .map((i) => i.trim())
+                                                                    .filter(Boolean);
+
+                                                                const newDanger: string[] = [];
+                                                                const safeItems: string[] = [];
+
+                                                                rawItems.forEach((item) => {
+                                                                    const match = dangerousWords.find((word) =>
+                                                                        item.toLowerCase().includes(word.toLowerCase())
+                                                                    );
+                                                                    if (match) {
+                                                                        if (!currentDangerList.includes(match)) {
+                                                                            newDanger.push(match);
+                                                                        }
+                                                                    } else {
+                                                                        safeItems.push(item);
+                                                                    }
+                                                                });
+
+                                                                // สร้างข้อความใหม่ที่จะแสดงในแต่ละช่อง
+                                                                const safeText = safeItems.join(", ") + (input.endsWith(",") ? ", " : input.endsWith(" ") ? " " : "");
+                                                                const dangerText = [...currentDangerList, ...newDanger].join(", ");
+
+                                                                setValue("active_ingredient", safeText);
+                                                                setValue("dangerous_ingredient", dangerText);
                                                             }}
                                                         />
                                                     )}
@@ -816,7 +855,7 @@ const ProductsPage = ({ urlParth }: PageProps) => {
                                                     ส่วนประกอบ <span className="text-red-700 font-bold">ที่เป็นอันตราย</span>
                                                 </label>
                                                 <Controller
-                                                    name="active_ingredient"
+                                                    name="dangerous_ingredient"
                                                     control={control}
                                                     render={({ field }) => (
                                                         <textarea
@@ -835,7 +874,7 @@ const ProductsPage = ({ urlParth }: PageProps) => {
 
                                             <div className="flex-1 mb-5">
                                                 <label className="block mb-2">
-                                                    ผลิตภัณฑ์นี้เป็นอันตรายไหม ?
+                                                    ผลิตภัณฑ์นี้เป็นอันตรายไหม ?<span className="text-red-600">*</span>
                                                 </label>
                                                 <Controller
                                                     name="is_dangerous"

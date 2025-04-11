@@ -5,6 +5,9 @@ import { useDropzone } from "react-dropzone";
 // API
 import apiClient from "../api/apiClient";
 
+// Constant
+import { dangerousWords } from "../constants/dangerousList";
+
 // Icons
 import { IoMdClose } from "react-icons/io";
 
@@ -57,8 +60,6 @@ const addProductSchema = z.object({
 })
 
 const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
-    const dangerousWords = ["SLS", "Sodium lauryl sulphate", "Sodium Lauryl Sulfate", "Paraben", "Propyl paraben", "Sodium Benzoate", "Ethyl paraben", "Methyl paraben", "Benzyl Alcohol", "Sodium Flouride"];
-
     const [brandData, setBrandData] = useState<BrandDataType[]>([])
     const [productCategoriesData, setProductCategoriesData] = useState<ProductCategoriesDataType[]>([])
     const [productTypeData, setProductTypeData] = useState<ProductTypeData[]>([])
@@ -91,7 +92,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
         product_image: null,
     })
 
-    const { control, handleSubmit, getValues, setValue, formState: { errors } } = useForm({
+    const { control, handleSubmit, setValue, getValues, formState: { errors } } = useForm({
         defaultValues: addProductData,
         resolver: zodResolver(addProductSchema),
     });
@@ -469,49 +470,51 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
                                             {...field}
                                             className="border border-slate-400 p-2 w-full rounded-md"
                                             placeholder="ส่วนประกอบที่ไม่เป็นอันตราย"
-                                            rows={4}
+                                            rows={6}
                                             value={field.value || ""}
                                             onChange={(e) => {
                                                 const input = e.target.value;
 
-                                                // แปลงข้อความให้ clean ก่อน (รองรับ comma, newline)
-                                                const rawItems = input
-                                                    .split(/,|\n/)
-                                                    .map((i) => i.trim())
-                                                    .filter(Boolean); // ตัด empty string ออก
-
+                                                // ดึง dangerous เดิมมาก่อน
                                                 const currentDanger = getValues("dangerous_ingredient") || "";
                                                 const currentDangerList = currentDanger
                                                     .split(/,|\n/)
                                                     .map((i) => i.trim())
                                                     .filter(Boolean);
 
-                                                const newDanger: string[] = [];
+                                                // แยกข้อความที่ user พิมพ์หรือวางเข้ามา
+                                                const rawItems = input
+                                                    .split(/,|\n/)
+                                                    .map((i) => i.trim())
+                                                    .filter(Boolean);
 
-                                                rawItems.forEach((inputItem) => {
+                                                const newDanger: string[] = [];
+                                                const safeItems: string[] = [];
+
+                                                rawItems.forEach((item) => {
                                                     const match = dangerousWords.find((word) =>
-                                                        inputItem.toLowerCase().includes(word.toLowerCase())
+                                                        item.toLowerCase().includes(word.toLowerCase())
                                                     );
-                                                    if (match && !currentDangerList.includes(match)) {
-                                                        newDanger.push(match);
+                                                    if (match) {
+                                                        if (!currentDangerList.includes(match)) {
+                                                            newDanger.push(match);
+                                                        }
+                                                    } else {
+                                                        safeItems.push(item);
                                                     }
                                                 });
 
-                                                const safe = rawItems.filter((item) => {
-                                                    return !dangerousWords.some((word) =>
-                                                        item.toLowerCase().includes(word.toLowerCase())
-                                                    );
-                                                });
+                                                // สร้างข้อความใหม่ที่จะแสดงในแต่ละช่อง
+                                                const safeText = safeItems.join(", ") + (input.endsWith(",") ? ", " : input.endsWith(" ") ? " " : "");
+                                                const dangerText = [...currentDangerList, ...newDanger].join(", ");
 
-                                                setValue("active_ingredient", safe.join(", "));
-                                                setValue(
-                                                    "dangerous_ingredient",
-                                                    [...currentDangerList, ...newDanger].join(", ")
-                                                );
+                                                setValue("active_ingredient", safeText);
+                                                setValue("dangerous_ingredient", dangerText);
                                             }}
                                         />
                                     )}
                                 />
+
                             </div>
 
                             <div className="flex-1 mb-5">
@@ -538,7 +541,7 @@ const AddProductModal = ({ setAddModal, refreshData }: AddModalProps) => {
 
                             <div className="flex-1 mb-5">
                                 <label className="block mb-2">
-                                    ผลิตภัณฑ์นี้เป็นอันตรายไหม ?
+                                    ผลิตภัณฑ์นี้เป็นอันตรายไหม ?<span className="text-red-600">*</span>
                                 </label>
                                 <Controller
                                     name="is_dangerous"

@@ -1,12 +1,15 @@
 export const dangerousWords = [
     "SLS",
-    "Sodium lauryl sulphate",
     "Sodium Lauryl Sulfate",
     "Paraben",
-    "Propyl paraben",
+    "Propyl Paraben",
     "Sodium Benzoate",
-    "Ethyl paraben",
-    "Methyl paraben",
+    "Ethyl Paraben",
+    "Methyl Paraben",
     "Benzyl Alcohol",
-    "Sodium Flouride",
+    "Sodium Fluoride",
+    "Ethylparaben",
+    "Methylparaben",
+    "Propylparaben",
+    "Sodium Monofluorophosphate"
 ];

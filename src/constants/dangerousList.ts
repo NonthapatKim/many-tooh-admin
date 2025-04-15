@@ -11,5 +11,6 @@ export const dangerousWords = [
     "Ethylparaben",
     "Methylparaben",
     "Propylparaben",
-    "Sodium Monofluorophosphate"
+    "Sodium Monofluorophosphate",
+    "Alcohol"
 ];
